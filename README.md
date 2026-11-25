@@ -1,42 +1,51 @@
-# Google Search Scraper & API 🚀
+# Google Search Scraper & API
 
-Moderní webový scraper postavený na **FastAPI** a **Selenium**, který automatizuje sběr výsledků z vyhledávače Google. Projekt je plně kontejnerizován a optimalizován pro nasazení v cloudu (např. Railway).
+Webová aplikace, která pro zadané klíčové slovo stáhne výsledky z vyhledávače Google a vrátí je jako JSON soubor. Postavená na **FastAPI** a **Selenium**, spustitelná lokálně i v Dockeru.
 
-## ✨ Klíčové vlastnosti
-- **Asynchronní API:** Postaveno na FastAPI pro vysoký výkon a rychlou odezvu.
-- **Advanced Scraping:** Využívá Selenium s pokročilým maskováním botů (stealth mode, custom User-Agents, CDP příkazy).
-- **Cloud Ready:** Automatická detekce prostředí (Windows vs. Linux/Railway) a konfigurace cest k prohlížeči Chromium.
-- **Strojově čitelný výstup:** Výsledky jsou generovány do strukturovaného formátu JSON.
-- **Unit Testing:** Pokrytí testy pomocí `pytest` pro zajištění stability scraping logiky a souborových operací.
+Projekt vznikl jako zadání ve výběrovém řízení.
 
-## 🛠️ Technologie
-- **Python 3.10+**
-- **FastAPI** (Web framework)
-- **Selenium WebDriver** (Automatizace prohlížeče)
-- **Chromium / ChromeDriver** (Prohlížeč pro serverové prostředí)
-- **Pytest** (Testování)
-- **Jinja2** (HTML šablony)
+## Co umí
+- Jednoduchý formulář v prohlížeči: zadáš dotaz, dostaneš soubor `results_google.json` (název a odkaz každého výsledku).
+- Selenium běží v headless režimu a odklikne cookie lištu.
+- Sám pozná, jestli běží v Linuxu/Dockeru (použije systémový Chromium), nebo lokálně (stáhne ChromeDriver).
+- Ukázkový výstup je v [`results_google.json`](results_google.json).
 
-## 🚀 Rychlý start
+## Technologie
+Python 3.10+, FastAPI, Uvicorn, Selenium, Jinja2, Docker, pytest
 
-### Lokální spuštění (Windows/macOS)
-1. **Klonování repozitáře:**
-   ```bash
-   git clone [https://github.com/daniel-becher/inizio.git](https://github.com/daniel-becher/inizio.git)
-   cd inizio
-    ```
+## Spuštění lokálně
+Potřebuješ Python 3.10+ a nainstalovaný Google Chrome.
 
-2. **Instalace závislostí:**
-   ```bash
-   pip install -r requirements.txt
-    ```
+```bash
+git clone https://github.com/daniel-becher/google-search-scraper.git
+cd google-search-scraper
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python google_test.py
+```
 
-3. **Spuštění aplikace:**
-   ```bash
-   python google_test.py
-    ```
+Pak otevři http://localhost:8000.
 
-4. **Spuštění testů:**
-   ```bash
-   pytest unit_tests.py
-   ```
+## Spuštění v Dockeru
+```bash
+docker compose up --build
+```
+
+Aplikace poběží na http://localhost:8000.
+
+## Testy
+```bash
+pytest unit_tests.py
+```
+
+Pozor: test `test_google_scrape_returns_data` volá skutečný Google, takže potřebuje internet a může občas selhat, když Google zobrazí CAPTCHA.
+
+## Struktura
+```
+google_test.py       # FastAPI aplikace a scraping logika
+templates/index.html # formulář
+unit_tests.py        # testy
+Dockerfile           # obraz s Pythonem a Chromiem
+docker-compose.yml   # spuštění jedním příkazem
+```
